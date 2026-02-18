@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Patient,
+  Severity,
   ActivityEvent,
   generateInitialQueue,
   computeMetrics,
@@ -8,7 +9,6 @@ import {
   createActivityEvent,
   getWaitTimeTrend,
   getSeverityDistribution,
-  getPriorityDistribution,
 } from '@/lib/queue-data';
 
 export function useQueueSimulation() {
@@ -41,6 +41,26 @@ export function useQueueSimulation() {
     });
   }, [addEvent]);
 
+  const addPatient = useCallback((data: { name: string; age: number; symptoms: string; severity: Severity }) => {
+    const severityBase = { Critical: 90, High: 70, Moderate: 45, Low: 20 }[data.severity];
+    const confidence = Math.round(75 + Math.random() * 25);
+    const priorityScore = Math.min(100, Math.max(0, Math.round(severityBase + Math.random() * 10 - 5)));
+    const newPatient: Patient = {
+      id: `P-${Date.now()}`,
+      name: data.name,
+      age: data.age,
+      severity: data.severity,
+      confidence,
+      priorityScore,
+      waitTime: 0,
+      status: 'Waiting',
+      symptoms: data.symptoms,
+      addedAt: new Date(),
+    };
+    setPatients((prev) => [...prev, newPatient].sort((a, b) => b.priorityScore - a.priorityScore));
+    addEvent(`${data.name} added (${data.severity} severity)`, 'added');
+  }, [addEvent]);
+
   // Simulation tick every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,7 +89,6 @@ export function useQueueSimulation() {
 
   const metrics = computeMetrics(patients);
   const severityDist = getSeverityDistribution(patients);
-  const priorityDist = getPriorityDistribution(patients);
 
   return {
     patients,
@@ -77,8 +96,8 @@ export function useQueueSimulation() {
     events,
     waitTrend,
     severityDist,
-    priorityDist,
     startConsultation,
     completePatient,
+    addPatient,
   };
 }
