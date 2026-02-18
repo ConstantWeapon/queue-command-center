@@ -43,9 +43,6 @@ export function QueueTable({ patients, onStartConsultation, onComplete }: QueueT
               <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">#</th>
               <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Patient</th>
               <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Severity</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Confidence</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Priority</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Wait</th>
               <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
               <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Action</th>
             </tr>
@@ -71,30 +68,6 @@ export function QueueTable({ patients, onStartConsultation, onComplete }: QueueT
                     <Badge variant="outline" className={`${severityColors[patient.severity]} text-xs font-mono`}>
                       {patient.severity}
                     </Badge>
-                  </td>
-                  <td className="px-4 py-3 font-mono text-sm">
-                    {patient.confidence}%
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${patient.priorityScore}%`,
-                            backgroundColor: patient.priorityScore > 80
-                              ? 'hsl(var(--critical))'
-                              : patient.priorityScore > 60
-                              ? 'hsl(var(--warning))'
-                              : 'hsl(var(--primary))',
-                          }}
-                        />
-                      </div>
-                      <span className="font-mono text-sm font-semibold">{patient.priorityScore}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 font-mono text-sm text-muted-foreground">
-                    {patient.waitTime}m
                   </td>
                   <td className="px-4 py-3">
                     <Badge variant="outline" className={`${statusColors[patient.status]} text-xs`}>
